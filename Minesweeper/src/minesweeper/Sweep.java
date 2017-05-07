@@ -12,6 +12,9 @@ public class Sweep extends javax.swing.JFrame {
     final int wid = 9, hei = 9, noOfBombs = 10;
     JToggleButton[][] blocks = new JToggleButton[hei][wid];
     int[][] blox = new int[hei][wid];
+    boolean firstGame = false;
+    
+    
     ActionListener listen = new ActionListener(){
         public void actionPerformed(ActionEvent e){
             int i = 0, j = 0;
@@ -26,6 +29,10 @@ public class Sweep extends javax.swing.JFrame {
                 if(found) break;
             }
             blocks[i][j].setSelected(true);
+            if(!firstGame){
+                spawn(i, j);
+                firstGame = true;
+            }
         }
     };
     
@@ -44,6 +51,20 @@ public class Sweep extends javax.swing.JFrame {
         }
     }
 
+    private void spawn(int x, int y){
+        for(int k = 1; k <= noOfBombs; k++){
+           int i, j;
+            do{
+                i = (int)(Math.random()*(wid-0.01));
+                j = (int)(Math.random()*(hei-0.01));
+            }
+            while(blox[i][j] == -1 && i == y && j == x);
+             blox[i][j] = -1;
+             blocks[i][j].setText("Bomb");
+        }
+    };
+    
+    
     private void resize(){
         for(int i = 0; i < hei; i++){
             for(int j = 0; j < wid; j++){
