@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 public class Sweep extends javax.swing.JFrame {
     /*
+    -2: opened but haven't a bombs
     -1: has a bomb
     0: not open
     1 - 8: number of bombs
@@ -12,7 +13,7 @@ public class Sweep extends javax.swing.JFrame {
     final int wid = 9, hei = 9, noOfBombs = 10;
     JToggleButton[][] blocks = new JToggleButton[hei][wid];
     int[][] blox = new int[hei][wid];
-    boolean firstGame = false;
+    boolean firstGame, youCanPlay;
     
     
     ActionListener listen = new ActionListener(){
@@ -26,22 +27,61 @@ public class Sweep extends javax.swing.JFrame {
                         break;
                     }
                 }
-                if(found) break;
+                if(found) 
+                    break;
             }
-            blocks[i][j].setSelected(true);
-            if(!firstGame){
-                spawn(i, j);
-                firstGame = true;
-            }
+                if(youCanPlay){
+                blocks[i][j].setSelected(true);
+                if(!firstGame){
+                    spawn(i, j);
+                    firstGame = true;
+                 }
+                    if(blox[i][j] != -1){
+                    open(i, j);
+                    reval();
+
+                    }
+                else
+                    youLose();
+            } 
+        }
+        private void youLose() {
+           
         }
     };
     
-    
+    private void open(int y, int x){
+        if(y < 0 || x < 0 || x > wid - 1 || y > hei - 1 || blox[y][x] != 0)
+            return;
+        int bombs = 0;
+        for(int i = y - 1; i <= y + 1; i++){
+            for(int j = x - 1; j <= x + 1; j++){
+                if(!(j < 0 || i < 0 || j > wid - 1 || i > hei - 1) && blox[i][j] == -1)
+                bombs++;    
+                
+            }
+        }
+       
+        if(bombs == 0){
+            blox[y][x] = -2;
+            for(int i = y - 1; i <= y + 1; i++){
+                for(int j = x - 1; j <= x + 1; j++){
+                    if(!(j < 0 || i < 0 || j > wid - 1 || i > hei - 1))
+                if(i != y || j != x) 
+                    open(i, j);
+                }
+            
+            }
+        }
+        else
+            blox[y][x] = bombs;
+    }
     
     public Sweep() {
-        initComponents();
-        for(int i = 0; i < hei; i++){
-            for(int j = 0; j < wid; j++){
+        initComponents(); 
+        int i, j;
+        for( i = 0; i < hei; i++){
+            for( j = 0; j < wid; j++){
                 blocks[i][j] = new JToggleButton();
                 blocks[i][j].setSize(jPanel1.getWidth()/wid, jPanel1.getHeight()/hei);
                 jPanel1.add(blocks[i][j]);
@@ -49,18 +89,40 @@ public class Sweep extends javax.swing.JFrame {
                 blocks[i][j].addActionListener(listen);
             }
         }
+        firstGame = false;
+        youCanPlay = true;
     }
-
-    private void spawn(int x, int y){
+  
+    private void reval(){
+        int i, j;
+        for(i = 0; i < hei; i++){
+                for(j = 0; j < wid; j++){
+                    if(blox[i][j] == -2){
+                        blocks[i][j].setText("");
+                        blocks[i][j].setSelected(true);
+                    }
+                     if(blox[i][j] > 0){
+                        blocks[i][j].setText("" + blox[i][j]);
+                        blocks[i][j].setSelected(true);
+                }
+                     if(blox[i][j] == 0){
+                        blocks[i][j].setText("");
+                        blocks[i][j].setSelected(false);
+                }
+            }
+        }
+    }
+    
+    private void spawn(int y, int x){
         for(int k = 1; k <= noOfBombs; k++){
            int i, j;
             do{
                 i = (int)(Math.random()*(wid-0.01));
                 j = (int)(Math.random()*(hei-0.01));
             }
-            while(blox[i][j] == -1 && i == y && j == x);
-             blox[i][j] = -1;
-             blocks[i][j].setText("Bomb");
+            while(blox[i][j] == -1 || (i == y && j == x));
+            blox[i][j] = -1;
+             //blocks [i][j].setText("Bomb");
         }
     };
     
