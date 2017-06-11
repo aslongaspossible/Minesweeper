@@ -43,10 +43,39 @@ public class Sweep extends javax.swing.JFrame {
                     }
                 else
                     youLose();
-            } 
+                    youWin();
+            } else reval();
         }
-        private void youLose() {
+        
+        private void youWin(){
+            boolean youWon = true;
+             for(int i = 0; i < hei; i++){
+               for(int j = 0; j < wid ; j++){
+                    if(blox[i][j] ==0){
+                        youWon = false;
+                    break;
+               }
+               }
+               if(!youWon) break;
+             }
+             if(youWon) {
+                 javax.swing.JOptionPane.showMessageDialog(null, "You Win!!!");
+                 youCanPlay = false;
+             }
+            }
            
+        
+        private void youLose() {
+           youCanPlay = false;
+           for(int i = 0; i < hei; i++){
+               for(int j = 0; j < wid ; j++){
+                   if(blox[i][j] == -1){
+                       blocks[i][j].setText("BOOM");
+                       blocks[i][j].setSelected(true);
+                   }
+                       
+               }
+           }
         }
     };
     
@@ -109,6 +138,7 @@ public class Sweep extends javax.swing.JFrame {
                         blocks[i][j].setText("");
                         blocks[i][j].setSelected(false);
                 }
+                     if(! youCanPlay && blox[i][j] == -1 )  blocks[i][j].setSelected(true);
             }
         }
     }
@@ -141,6 +171,10 @@ public class Sweep extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        jMenu1 = new javax.swing.JMenu();
+        jMenuItem1 = new javax.swing.JMenuItem();
+        jMenu2 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -158,8 +192,26 @@ public class Sweep extends javax.swing.JFrame {
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 278, Short.MAX_VALUE)
+            .addGap(0, 257, Short.MAX_VALUE)
         );
+
+        jMenu1.setText("Game");
+
+        jMenuItem1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem1.setText("New game");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem1);
+
+        jMenuBar1.add(jMenu1);
+
+        jMenu2.setText("Edit");
+        jMenuBar1.add(jMenu2);
+
+        setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -185,6 +237,13 @@ public class Sweep extends javax.swing.JFrame {
         resize();
     }//GEN-LAST:event_jPanel1ComponentResized
 
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        blox = new int[hei][wid];
+        reval();
+        youCanPlay = true;
+        firstGame = false;
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
+
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -194,6 +253,10 @@ public class Sweep extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JPanel jPanel1;
     // End of variables declaration//GEN-END:variables
 }
